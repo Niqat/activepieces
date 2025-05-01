@@ -11,6 +11,7 @@ jobs:
   deploy:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -20,10 +21,17 @@ jobs:
 
       - name: SSH and run docker command
         run: |
-          expect <<'EOF'
+          expect <<EOF
           spawn ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-          expect "assword:"
-          send "${{ secrets.SSH_PASSWORD }}\r"
+          expect {
+            "*yes/no" {
+              send "yes\r"
+              exp_continue
+            }
+            "*assword:" {
+              send "${{ secrets.SSH_PASSWORD }}\r"
+            }
+          }
           expect "$ "
           send "cd activepieces && docker compose -f docker-compose.niqat.yml -p activepieces down && git pull && docker compose -f docker-compose.niqat.yml -p activepieces up -d --build\r"
           expect "$ "
