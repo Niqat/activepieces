@@ -20,12 +20,12 @@ jobs:
 
       - name: SSH and run docker command
         run: |
-          expect <<EOF
+          expect <<'EOF'
           spawn ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
           expect "assword:"
           send "${{ secrets.SSH_PASSWORD }}\r"
           expect "$ "
-          send "cd activepieces && docker compose -f docker-compose.niqat.yml -p activepieces down && git pull && docker compose -f docker-compose.niqat.yml -p activepieces up -d --build"
+          send "cd activepieces && docker compose -f docker-compose.niqat.yml -p activepieces down && git pull && docker compose -f docker-compose.niqat.yml -p activepieces up -d --build\r"
           expect "$ "
           send "exit\r"
           expect eof
