@@ -25,4 +25,4 @@ jobs:
             docker compose -f docker-compose.niqat.yml -p activepieces up -d --build
             docker image prune -f
             docker container prune -f
-          command_timeout: 1000s
+          command_timeout: 3600s
